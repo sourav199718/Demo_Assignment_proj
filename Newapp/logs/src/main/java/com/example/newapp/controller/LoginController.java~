@@ -1,0 +1,30 @@
+package com.example.newapp.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
+
+@Controller
+public class LoginController {
+
+    @GetMapping("/login")
+    public String loginPage(@RequestParam(required = false) String error, Model model) {
+        if (error != null) {
+            model.addAttribute("errorMessage", "Invalid username or password.");
+        }
+        return "login"; // renders login.html
+    }
+
+    @PostMapping("/login")
+    public String login(@RequestParam String username,
+                        @RequestParam String password) {
+
+        // Simple hardcoded authentication logic
+        if ("admin".equals(username) && "admin123".equals(password)) {
+            return "redirect:/employees"; // success - redirect to employee list page
+        } else {
+            // fail - redirect back to login with error flag
+            return "redirect:/login?error=true";
+        }
+    }
+}

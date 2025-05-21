@@ -1,0 +1,138 @@
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Login</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: url('https://images.unsplash.com/photo-1496568816309-51d7c20e3b21?q=80&w=1931&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px 50px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .login-box img {
+            height: 70px; /* Increased from 50px to 70px */
+            margin-bottom: 20px;
+        }
+
+        .login-box h2 {
+            margin-bottom: 10px;
+            font-size: 24px;
+            color: #333;
+        }
+
+        .login-box p {
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .login-box input[type="text"],
+        .login-box input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .login-box button {
+            width: 100%;
+            padding: 12px;
+            background-color: #6a11cb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .login-box button:hover {
+            background-color: #5b0fc1;
+        }
+
+        .login-box .terms {
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<div class="login-box">
+    <img src="https://www.brandlogopng.com/files/png/computer/computer-and-information-technology-transparent-background-sleek-beautiful-distributed-computing-dpm7.jpg" alt="Logo" />
+    <h2>Welcome</h2>
+    <p>Login to access your account</p>
+
+<!--    <form method="post" action="/auth/login">-->
+    <form id="loginForm">
+        <input type="text" name="username" placeholder="Enter your user id" required>
+        <input type="password" name="password" placeholder="Enter your password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <div class="terms">
+        <a href="#">Terms & Conditions</a> | <a href="#">Privacy Policy</a>
+    </div>
+</div>
+<script>
+    document.getElementById("loginForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(e.target);
+        const response = await fetch("/auth/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                username: formData.get("username"),
+                password: formData.get("password")
+            })
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            localStorage.setItem("token", data.token);
+            alert("Login success");
+            // Redirect or update UI
+            // window.location.href = "/employees";
+            const token = localStorage.getItem("token");
+
+            const response2 = await fetch("/employees", {
+                method: "GET",
+                headers: {
+                    "Authorization": "Bearer " + token
+                }
+            }).then((response) =>window.location.href = "/employees"
+
+        )
+
+        } else {
+            alert("Login failed");
+        }
+    });
+</script>
+</body>
+</html>

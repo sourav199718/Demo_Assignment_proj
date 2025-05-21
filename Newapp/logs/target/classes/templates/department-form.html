@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <title>Department Form</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f0f2f5;
+    }
+
+    form {
+      background-color: white;
+      max-width: 400px;
+      margin: auto;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    button[type="submit"] {
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    button[type="submit"]:hover {
+      background-color: #45a049;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+
+<h2>Department Form</h2>
+
+<form id="departmentForm">
+  <input type="hidden" id="deptId" th:value="${department.id}" />
+
+  <label for="name">Name:</label>
+  <input type="text" id="name" name="name" th:value="*{name}" required />
+
+  <button type="submit">Save</button>
+</form>
+
+<script>
+  document.getElementById("departmentForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+
+    const id = document.getElementById("deptId").value;
+    const department = {
+      name: document.getElementById("name").value
+    };
+
+    const method = id ? "PUT" : "POST";
+    const url = id ? `/api/departments/${id}` : "/api/departments/save";
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Authorization": "Bearer " + token,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(department)
+      });
+
+      if (response.ok) {
+        window.location.href = "/departments";
+      } else {
+        alert("Failed to save department");
+      }
+    } catch (error) {
+      alert("Error: " + error.message);
+    }
+  });
+</script>
+
+</body>
+</html>

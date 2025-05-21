@@ -1,0 +1,4 @@
+package com.example.newapp.controller;
+
+public class DepartmentWebController {
+}
